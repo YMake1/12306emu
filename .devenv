@@ -1,0 +1,4 @@
+DB_USER=root
+DB_PASSWORD=default_passwd
+DB_HOST=localhost
+DB_DATABASE=12306emu

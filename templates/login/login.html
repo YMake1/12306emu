@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>登录页面</title>
+    <style>
+        .center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+    </style>
+</head>
+<body>
+    <div class="center">
+        <h2>欢迎，请登录或注册</h2>
+        <form action="/login" method="post">
+            <label for="username">用户名:</label><br>
+            <input type="text" id="username" name="username"><br>
+            <label for="password">密码:</label><br>
+            <input type="password" id="password" name="password"><br>
+            <input type="submit" value="登录">
+        </form>
+        <button onclick="location.href='/signup'">注册</button>
+    </div>
+</body>
+</html>

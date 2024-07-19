@@ -1,4 +1,4 @@
-from settings import Config
+from .settings import Config
 
 class DevelopmentConfig(Config):
     '开发模式下的配置'
