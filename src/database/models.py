@@ -7,18 +7,33 @@ db = SQLAlchemy()
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), nullable=False)
-    gender = db.Column(db.String(3), nullable=False)
+    gender = db.Column(db.Boolean, nullable=False) # 0:female 1:male
     password_hash = db.Column(db.String(128), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
+    phone_number = db.Column(db.String(15), unique=True, nullable=False)
+    id_number = db.Column(db.String(18), unique=True, nullable=False)
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
     def validate_password(self, password):
         return check_password_hash(self.password_hash, password)
+    
+class Passenger(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), nullable=False)
+    passenger_type = db.Column(db.String(1), nullable=False) # 0:adult 1:child 2:student
+    id_number = db.Column(db.String(18), unique=True, nullable=False)
+    phone_number = db.Column(db.String(15), unique=True, nullable=False)
 
 class Station(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True, nullable=False)
     city = db.Column(db.String(64), nullable=False)
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'city': self.city
+        }
 
 class Train(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -27,6 +42,7 @@ class Train(db.Model):
     end_station_id = db.Column(db.Integer, db.ForeignKey('station.id'), nullable=False)
     departure_time = db.Column(db.DateTime, nullable=False)
     arrival_time = db.Column(db.DateTime, nullable=False)
+    situation = db.Column(db.String(1), nullable=False) # 0:normal 1:stop 2:delay
 
 class Stop(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -38,7 +54,7 @@ class Stop(db.Model):
 class Ticket(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     train_id = db.Column(db.Integer, db.ForeignKey('train.id'), nullable=False)
-    seat_type = db.Column(db.String(64), nullable=False)
+    seat_type = db.Column(db.String(1), nullable=False) # 0:hardseat or second 1:hardbed or first 2:softbed or commercial
     price = db.Column(db.Float, nullable=False)
     remaining = db.Column(db.Integer, nullable=False)
 

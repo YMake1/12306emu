@@ -1,10 +1,13 @@
 from flask import Flask, request, redirect, url_for
 from flask_login import LoginManager, current_user
+from flask_restful import Api
 
-from src.settings.dev import DevelopmentConfig
-from src.settings.prod import ProductionConfig
+from src.config.dev import DevelopmentConfig
+from src.config.prod import ProductionConfig
 from src.application.login import login_blu
 from src.database.models import User, Station, Train, Stop, Ticket, Order, db
+from src.design.resources import StationResource
+from src.makelogs.logger import makelogs
 
 def create_app(config_name):
     app = Flask(__name__)
@@ -31,8 +34,16 @@ def create_app(config_name):
         if request.endpoint not in allowed_routes and current_user.is_anonymous:
             return redirect(url_for('login_blu.login'))
 
+    # database config
     db.init_app(app)
     with app.app_context():
         db.create_all()
+
+    # api config
+    api = Api(app)
+    api.add_resource(StationResource, '/stations/<int:station_id>', '/stations')
+
+    # logger config
+    makelogs(app)
 
     return app
