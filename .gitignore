@@ -1,0 +1,6 @@
+
+count.cmd
+count.ps1
+migrations
+**/__pycache__/
+**/cache/

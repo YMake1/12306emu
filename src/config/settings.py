@@ -18,6 +18,8 @@ database = data.database
 class Config(object):
     DEBUG=False
     LOG_LEVEL = "INFO"
+    SECRET_KEY = 'your secret key'
+    JSON_AS_ASCII = False
     REDIS_HOST = 'your host'
     REDIS_PORT = 'your port'
     REDIS_PASSWORD = 'your password'

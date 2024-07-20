@@ -7,19 +7,20 @@ db = SQLAlchemy()
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), nullable=False)
-    gender = db.Column(db.Boolean, nullable=False) # 0:female 1:male
-    password_hash = db.Column(db.String(128), nullable=False)
+    gender = db.Column(db.String(6), nullable=False)
+    password_hash = db.Column(db.String(256), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     phone_number = db.Column(db.String(15), unique=True, nullable=False)
     id_number = db.Column(db.String(18), unique=True, nullable=False)
     def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
+        self.password_hash = generate_password_hash(password, method='scrypt', salt_length=4)
     def validate_password(self, password):
         return check_password_hash(self.password_hash, password)
     
 class Passenger(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), nullable=False)
+    gender = db.Column(db.String(6), nullable=False)
     passenger_type = db.Column(db.String(1), nullable=False) # 0:adult 1:child 2:student
     id_number = db.Column(db.String(18), unique=True, nullable=False)
     phone_number = db.Column(db.String(15), unique=True, nullable=False)
