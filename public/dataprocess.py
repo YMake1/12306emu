@@ -1,7 +1,9 @@
 import csv
 
-def process_file(filename):
-    with open('./public/source/stations.csv', 'w', newline='', encoding='utf-8') as csvfile:
+path = './public/source'
+
+def stations_process(filename):
+    with open(f'{path}/stations/stations.csv', 'w', newline='', encoding='utf-8') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(['Station Name', 'Station City'])
         with open(filename, 'r', encoding='utf-8') as f:
@@ -25,4 +27,4 @@ def process_file(filename):
                 station_city = fields[7]
                 writer.writerow([station_name, station_city])
 
-process_file('./public/source/stations.txt')
+# stations_process(f'{path}/stations/stations.txt')

@@ -1,6 +1,7 @@
 
 count.cmd
 count.ps1
+.countignore
 migrations
 **/__pycache__/
 **/cache/

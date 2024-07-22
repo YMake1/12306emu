@@ -30,17 +30,46 @@
     </div>
     <script>
         $(document).ready(function(){
+            var stations = [];
+            $.getJSON("/api/stations", function(data){
+                stations = data;
+            });
             $("#departure, #arrival").focus(function(){
                 var select = this;
-                $.getJSON("/stations", function(data){
-                    var options = "";
-                    for(var i=0; i<data.length; i++){
-                        options += "<option value='" + data[i].name + "'>" + data[i].name + "</option>";
-                    }
-                    $(select).html(options);
-                });
+                var options = "";
+                for(var i=0; i<stations.length; i++){
+                    options += "<option value='" + stations[i].name + "'>" + stations[i].name + "</option>";
+                }
+                $(select).html(options);
             });
         });
+    </script>
+    <script>
+        window.onload = function() {
+            const pathSegments = window.location.pathname.split('/');
+            const userId = pathSegments[pathSegments.length - 1];
+            if (userId) {
+                fetch(`/api/tokens/${userId}`)
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            throw new Error('Failed to fetch tokens');
+                        }
+                    })
+                    .then(data => {
+                        const accessToken = data.access_token;
+                        const refreshToken = data.refresh_token;
+                        if (accessToken && refreshToken) {
+                            localStorage.setItem('access_token', accessToken);
+                            localStorage.setItem('refresh_token', refreshToken);
+                        }
+                    })
+                    .catch(error => console.error('Error fetching tokens:', error));
+            } else {
+                console.error('User ID not found in URL');
+            }
+        };
     </script>
 </body>
 </html>

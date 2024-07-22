@@ -1,10 +1,10 @@
 import os
-from flask import Blueprint, request, redirect, url_for, flash, render_template, make_response
+from flask import Blueprint, session, request, redirect, url_for, flash, render_template, make_response
 from flask import current_app as app
 from flask_login import login_user
-from werkzeug.security import generate_password_hash
 
 from src.database import models
+from src.design.token import generate_tokens
 from configs import project_root
 
 login_blu=Blueprint('login_blu', __name__)
@@ -23,17 +23,24 @@ def login():
         user = models.User.query.filter_by(email=email).first()
         if user is None:
             flash('user not found, please register')
-            app.logger.info('user not found')
+            # app.logger.info('user not found')
             return redirect(url_for('login_blu.signup'))
         else:
             if user.validate_password(password):
                 flash('login successful')
                 login_user(user)
-                app.logger.info(f'login successful {ip_address}')
-                return redirect(url_for('deco_blu.home', user_id=str(user.id)))
+                app.logger.info(f'login successful user: {user.name} {ip_address}')
+                access_token, refresh_token = generate_tokens(user.email)
+                session['user_id'] = user.id
+                session['access_token'] = access_token
+                session['refresh_token'] = refresh_token
+                response = redirect(url_for('deco_blu.home', user_id=str(user.id)))
+                # response.headers['Authorization'] = f'Bearer {access_token}'
+                # response.headers['Refresh-Token'] = refresh_token
+                return response
             else:
                 flash('incorrect password')
-                app.logger.info('incorrect password')
+                # app.logger.info('incorrect password')
                 return redirect(url_for('login_blu.login'))
     if request.method == 'GET':
         try:
@@ -61,7 +68,7 @@ def signup():
         models.db.session.add(user)
         models.db.session.commit()
         flash('signup successful')
-        app.logger.info(f'signup successful {ip_address}')
+        app.logger.info(f'signup successful user: {user.name} {ip_address}')
         return redirect(url_for('login_blu.login'))
     app.logger.info(f'signup page accessed {ip_address}')
     return render_template('login/signup.html')

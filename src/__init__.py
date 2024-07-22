@@ -13,7 +13,7 @@ from src.application.error import error_blu
 from src.application.decoration import deco_blu
 from src.database.models import User, Station, Train, Stop, Ticket, Order, db
 from src.database.views import initdb
-from src.design.resources import StationResource
+from src.design.resources import StationResource, TokenResource
 from src.makelogs.logger import makelogs
 
 def create_app(config_name):
@@ -57,6 +57,7 @@ def create_app(config_name):
     # api config
     api = Api(app)
     api.add_resource(StationResource, '/api/stations/<int:station_id>', '/api/stations')
+    api.add_resource(TokenResource, '/api/tokens/<int:user_id>')
 
     # logger config
     makelogs(app)
